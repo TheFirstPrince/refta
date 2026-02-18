@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  manager
+  assignee
+}
+
+enum SlotStatus {
+  planned
+  done
+  canceled
+}
+
+model Company {
+  id        String    @id @default(cuid())
+  name      String
+  contacts  Contact[]
+  tenders   Tender[]
+  createdAt DateTime  @default(now())
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  name      String
+  phone     String?
+  email     String?
+  tenders   Tender[]
+  createdAt DateTime @default(now())
+}
+
+model Tender {
+  id        String    @id @default(cuid())
+  tenderNo  String    @unique
+  companyId String
+  company   Company   @relation(fields: [companyId], references: [id], onDelete: Restrict)
+  contactId String?
+  contact   Contact?  @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  comment   String?
+  slots     Slot[]
+  createdAt DateTime  @default(now())
+}
+
+model User {
+  id           String @id @default(cuid())
+  fullName     String
+  email        String @unique
+  passwordHash String
+  role         Role
+  active       Boolean @default(true)
+
+  assignedSlots Slot[]   @relation("AssigneeSlots")
+  createdSlots  Slot[]   @relation("CreatorSlots")
+  createdAt     DateTime @default(now())
+}
+
+model Slot {
+  id         String     @id @default(cuid())
+  tenderId   String
+  tender     Tender     @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+  assigneeId String
+  assignee   User       @relation("AssigneeSlots", fields: [assigneeId], references: [id], onDelete: Restrict)
+  startAt    DateTime
+  endAt      DateTime
+  durationMin Int
+  comment    String?
+  status     SlotStatus @default(planned)
+  createdById String?
+  createdBy  User?      @relation("CreatorSlots", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt  DateTime   @default(now())
+
+  @@index([assigneeId, startAt, endAt])
+}
