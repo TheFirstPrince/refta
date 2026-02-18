@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Планировщик времени заявок</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Планировщик времени для тендерных заявок</h1>
+      <p class="subtitle">
+        Назначайте каждому заявочнику отдельное время рассмотрения заявки.
+      </p>
+
+      <section class="panel">
+        <h2>Новая заявка</h2>
+        <form id="request-form" class="form-grid">
+          <label>
+            Название компании
+            <input id="company" type="text" required placeholder="ООО ТехСтрой" />
+          </label>
+
+          <label>
+            Номер заявки
+            <input id="request-id" type="text" required placeholder="TND-2026-014" />
+          </label>
+
+          <label>
+            Контактное лицо
+            <input id="contact" type="text" required placeholder="Иван Петров" />
+          </label>
+
+          <label>
+            Дата
+            <input id="date" type="date" required />
+          </label>
+
+          <label>
+            Время начала
+            <input id="time-start" type="time" required />
+          </label>
+
+          <label>
+            Длительность (мин.)
+            <input id="duration" type="number" min="5" step="5" value="30" required />
+          </label>
+
+          <label class="full-width">
+            Комментарий
+            <textarea id="comment" rows="2" placeholder="Доп. условия заявки"></textarea>
+          </label>
+
+          <button type="submit">Добавить слот</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <h2>Расписание заявок</h2>
+          <button id="clear-all" class="danger" type="button">Очистить всё</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Дата</th>
+              <th>Время</th>
+              <th>Компания</th>
+              <th>Заявка</th>
+              <th>Контакт</th>
+              <th>Комментарий</th>
+              <th>Действия</th>
+            </tr>
+          </thead>
+          <tbody id="schedule-body"></tbody>
+        </table>
+        <p id="empty-state">Пока нет назначенных временных слотов.</p>
+      </section>
+    </main>
+
+    <template id="row-template">
+      <tr>
+        <td class="date"></td>
+        <td class="time"></td>
+        <td class="company"></td>
+        <td class="request-id"></td>
+        <td class="contact"></td>
+        <td class="comment"></td>
+        <td><button class="danger remove" type="button">Удалить</button></td>
+      </tr>
+    </template>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
