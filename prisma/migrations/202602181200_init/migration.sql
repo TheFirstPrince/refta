@@ -1,0 +1,2 @@
+-- generated via prisma migrate dev in real environment
+-- run: npx prisma migrate dev
